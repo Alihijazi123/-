@@ -1,105 +1,138 @@
-// العناصر الأساسية في الصفحة
+// تعريف العناصر
 const expenseForm = document.getElementById('expenseForm');
-const expenseTitleInput = document.getElementById('expenseTitle');
-const expenseAmountInput = document.getElementById('expenseAmount');
-const expenseDateInput = document.getElementById('expenseDate');
+const salesForm = document.getElementById('salesForm');
+
 const expenseTableBody = document.getElementById('expenseTableBody');
-const totalAmountDisplay = document.getElementById('totalAmount');
-const emptyState = document.getElementById('emptyState');
+const salesTableBody = document.getElementById('salesTableBody');
+
+const totalExpensesDisplay = document.getElementById('totalExpenses');
+const totalSalesDisplay = document.getElementById('totalSales');
+
+const emptyExpenses = document.getElementById('emptyExpenses');
+const emptySales = document.getElementById('emptySales');
 const clearAllBtn = document.getElementById('clearAll');
 
-// ضبط تاريخ اليوم افتراضياً في حقل التاريخ عند فتح الصفحة
+// ضبط التواريخ الافتراضية
 document.getElementById('expenseDate').valueAsDate = new Date();
+document.getElementById('salesDate').valueAsDate = new Date();
 
-// جلب البيانات المحفوظة مسبقاً من الـ LocalStorage أو مصفوفة فارغة
+// جلب البيانات من LocalStorage
 let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+let salesRecords = JSON.parse(localStorage.getItem('salesRecords')) || [];
 
-// دالة لتحديث واجهة المستخدم وعرض البيانات
 function renderApp() {
+    // 1. عرض المصاريف
     expenseTableBody.innerHTML = '';
-    let total = 0;
-
+    let totalExp = 0;
     if (expenses.length === 0) {
-        emptyState.style.display = 'block';
+        emptyExpenses.style.display = 'block';
     } else {
-        emptyState.style.display = 'none';
-        
-        // ترتيب المصاريف من الأحدث للأقدم بناءً على التاريخ
-        expenses.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        expenses.forEach((expense, index) => {
-            total += Number(expense.amount);
-
+        emptyExpenses.style.display = 'none';
+        expenses.forEach((item, index) => {
+            totalExp += Number(item.amount);
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td><strong>${escapeHtml(expense.title)}</strong></td>
-                <td style="color: #38bdf8; font-weight: 600;">$${Number(expense.amount).toFixed(2)}</td>
-                <td><i class="fa-regular fa-calendar-days" style="margin-left: 5px; color: #94a3b8;"></i> ${expense.date}</td>
-                <td>
-                    <button class="delete-btn" onclick="deleteExpense(${index})" title="حذف">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </td>
+                <td><strong>${escapeHtml(item.title)}</strong></td>
+                <td style="color: #f43f5e;">$${Number(item.amount).toFixed(2)}</td>
+                <td>${item.date}</td>
+                <td><button class="delete-btn" onclick="deleteExpense(${index})"><i class="fa-solid fa-trash"></i></button></td>
             `;
             expenseTableBody.appendChild(row);
         });
     }
+    totalExpensesDisplay.textContent = `$${totalExp.toFixed(2)}`;
 
-    // تحديث إجمالي المصروفات الشهرية
-    totalAmountDisplay.textContent = `$${total.toFixed(2)}`;
+    // 2. عرض المبيعات والإنتاج
+    salesTableBody.innerHTML = '';
+    let totalSl = 0;
+    if (salesRecords.length === 0) {
+        emptySales.style.display = 'block';
+    } else {
+        emptySales.style.display = 'none';
+        salesRecords.forEach((item, index) => {
+            totalSl += Number(item.profit);
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${escapeHtml(item.product)}</strong></td>
+                <td>${item.produced}</td>
+                <td><span style="color: #4ade80; font-weight: bold;">${item.sold}</span></td>
+                <td>${escapeHtml(item.client)}</td>
+                <td style="color: #38bdf8; font-weight: bold;">$${Number(item.profit).toFixed(2)}</td>
+                <td>${item.date}</td>
+                <td><button class="delete-btn" onclick="deleteSale(${index})"><i class="fa-solid fa-trash"></i></button></td>
+            `;
+            salesTableBody.appendChild(row);
+        });
+    }
+    totalSalesDisplay.textContent = `$${totalSl.toFixed(2)}`;
 }
 
-// إضافة مصروف جديد
-expenseForm.addEventListener('submit', function (e) {
+// إضافة مصروف
+expenseForm.addEventListener('submit', (e) => {
     e.preventDefault();
+    const title = document.getElementById('expenseTitle').value.trim();
+    const amount = parseFloat(document.getElementById('expenseAmount').value);
+    const date = document.getElementById('expenseDate').value;
 
-    const title = expenseTitleInput.value.trim();
-    const amount = parseFloat(expenseAmountInput.value);
-    const date = expenseDateInput.value;
+    if (!title || isNaN(amount)) return;
 
-    if (!title || isNaN(amount) || !date) return;
-
-    const newExpense = {
-        title,
-        amount,
-        date
-    };
-
-    expenses.push(newExpense);
-    saveAndRefresh();
-
-    // إعادة تعيين الحامل
-    expenseTitleInput.value = '';
-    expenseAmountInput.value = '';
-    expenseDateInput.valueAsDate = new Date(); // إرجاع تاريخ اليوم
+    expenses.push({ title, amount, date });
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    
+    document.getElementById('expenseTitle').value = '';
+    document.getElementById('expenseAmount').value = '';
+    document.getElementById('expenseDate').valueAsDate = new Date();
+    renderApp();
 });
 
-// حذف مصروف معين
+// إضافة مبيعات وإنتاج (تمت إضافة renderApp هنا لكي يظهر السجل وتتحدث الصفحة فوراً)
+salesForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const product = document.getElementById('productName').value.trim();
+    const produced = parseInt(document.getElementById('prodQuantity').value);
+    const sold = parseInt(document.getElementById('soldQuantity').value);
+    const client = document.getElementById('clientName').value.trim();
+    const profit = parseFloat(document.getElementById('totalProfit').value);
+    const date = document.getElementById('salesDate').value;
+
+    if (!product || isNaN(produced) || isNaN(sold) || !client || isNaN(profit)) return;
+
+    salesRecords.push({ product, produced, sold, client, profit, date });
+    localStorage.setItem('salesRecords', JSON.stringify(salesRecords));
+
+    salesForm.reset();
+    document.getElementById('salesDate').valueAsDate = new Date();
+    
+    // استدعاء دالة التحديث لتظهر العناصر فوراً في الجدول
+    renderApp();
+});
+
+// حذف مصروف
 window.deleteExpense = function(index) {
     expenses.splice(index, 1);
-    saveAndRefresh();
-}
+    localStorage.setItem('expenses', JSON.stringify(expenses));
+    renderApp();
+};
 
-// حذف جميع المصاريف
-clearAllBtn.addEventListener('click', function() {
-    if (expenses.length > 0 && confirm('هل أنت متأكد من رغبتك في حذف جميع سجلات المصاريف؟')) {
+// حذف سجل بيع
+window.deleteSale = function(index) {
+    salesRecords.splice(index, 1);
+    localStorage.setItem('salesRecords', JSON.stringify(salesRecords));
+    renderApp();
+};
+
+// مسح جميع المصاريف
+clearAllBtn.addEventListener('click', () => {
+    if(confirm('هل تريد مسح جميع المصاريف؟')) {
         expenses = [];
-        saveAndRefresh();
+        localStorage.setItem('expenses', JSON.stringify(expenses));
+        renderApp();
     }
 });
 
-// حفظ البيانات في الـ LocalStorage وتحديث الشاشة
-function saveAndRefresh() {
-    localStorage.setItem('expenses', JSON.stringify(expenses));
-    renderApp();
-}
-
-// حماية بسيطة ضد الـ XSS
 function escapeHtml(str) {
-    return str.replace(/[&<>'"]/g, 
-        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-    );
+    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
 }
 
-// التشغيل الأولي عند تحميل الصفحة
+// التشغيل الأولي
 renderApp();

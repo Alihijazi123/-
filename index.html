@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مصروف شهريل</title>
+    <title>إدارة المصلحة والمصروفات</title>
     <link rel="stylesheet" href="style.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -15,70 +15,132 @@
     <div class="container">
         <!-- Header -->
         <header>
-            <h1><i class="fa-solid fa-wallet"></i> Masroof In Month</h1>
-          
+            <h1><i class="fa-solid fa-briefcase"></i> Masrof In Month </h1>
+           
         </header>
 
-        <!-- Main Dashboard Layout -->
-        <div class="dashboard-grid">
-            <!-- Summary Card -->
-            <div class="card total-card">
-                <div class="card-icon"><i class="fa-solid fa-coins"></i></div>
+        <!-- Bento Statistics Grid -->
+        <div class="stats-grid">
+            <div class="card stat-card">
+                <div class="card-icon" style="color: #38bdf8; background: rgba(56,189,248,0.1);"><i class="fa-solid fa-coins"></i></div>
                 <div class="card-info">
-                    <h3> المصروفات الشهرية</h3>
-                    <p id="totalAmount">$0.00</p>
+                    <h3> المصاريف</h3>
+                    <p id="totalExpenses">$0.00</p>
                 </div>
             </div>
 
-            <!-- Add Expense Form Card -->
+            <div class="card stat-card">
+                <div class="card-icon" style="color: #4ade80; background: rgba(74,222,128,0.1);"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="card-info">
+                    <h3> المبيعات والأرباح</h3>
+                    <p id="totalSales">$0.00</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forms Section -->
+        <div class="dashboard-grid">
+            <!-- Add Expense Form -->
             <div class="card form-card">
-                <h2><i class="fa-solid fa-circle-plus"></i> إضافة مصروف جديد</h2>
+                <h2><i class="fa-solid fa-circle-plus" style="color: #f43f5e;"></i>  مصروف شهري</h2>
                 <form id="expenseForm">
                     <div class="input-group">
-                        <label for="expenseTitle">اسم المصروف   </label>
-                        <input type="text" id="expenseTitle" placeholder="مثال: قهوة، تسوق، فاتورة..." required>
+                        <label for="expenseTitle">بيان المصروف</label>
+                        <input type="text" id="expenseTitle" placeholder="مثال: إيجار، كهرباء، مواد..." required>
                     </div>
-
                     <div class="input-group">
                         <label for="expenseAmount">المبلغ ($)</label>
                         <input type="number" id="expenseAmount" step="0.01" placeholder="0.00" required>
                     </div>
-
                     <div class="input-group">
                         <label for="expenseDate">التاريخ</label>
                         <input type="date" id="expenseDate" required>
                     </div>
+                    <button type="submit" class="btn-submit btn-expense">حفظ المصروف</button>
+                </form>
+            </div>
 
-                    <button type="submit" class="btn-submit">حفظ المصروف <i class="fa-solid fa-check"></i></button>
+            <!-- Add Production/Sales Form -->
+            <div class="card form-card">
+                <h2><i class="fa-solid fa-box-open" style="color: #4ade80;"></i> تسجيل إنتاج ومبيعات</h2>
+                <form id="salesForm">
+                    <div class="input-group">
+                        <label for="productName">اسم المنتج  </label>
+                        <input type="text" id="productName" placeholder="مثال: قطعة خشبية، تصميم..." required>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="prodQuantity">كمية الإنتاج</label>
+                            <input type="number" id="prodQuantity" placeholder="0" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="soldQuantity">الكمية المباعة</label>
+                            <input type="number" id="soldQuantity" placeholder="0" required>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="clientName">اسم الزبون (لمن بعت)</label>
+                            <input type="text" id="clientName" placeholder="اسم الزبون" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="totalProfit">سعر البيع / الربح ($)</label>
+                            <input type="number" id="totalProfit" step="0.01" placeholder="0.00" required>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="salesDate">التاريخ</label>
+                        <input type="date" id="salesDate" required>
+                    </div>
+                    <button type="submit" class="btn-submit btn-sales">حفظ سجل المبيعات</button>
                 </form>
             </div>
         </div>
 
-        <!-- Expense List Section -->
-        <div class="card table-card">
-            <div class="table-header">
-                <h2><i class="fa-solid fa-list-check"></i> سجل المصاريف المحفوظة</h2>
-                <button id="clearAll" class="btn-danger"><i class="fa-solid fa-trash-can"></i> حذف الكل</button>
+        <!-- Tables Section -->
+        <div class="tables-container">
+            <!-- Sales & Production Table -->
+            <div class="card table-card">
+                <h2><i class="fa-solid fa-boxes-stacked"></i>  الإنتاج والمبيعات للزبائن</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>المنتج</th>
+                                <th>الإنتاج</th>
+                                <th>المباع</th>
+                                <th>الزبون</th>
+                                <th>القيمة/الربح</th>
+                                <th>التاريخ</th>
+                                <th>إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="emptySales" class="empty-state"><p>لا توجد مبيعات أو إنتاج مسجل.</p></div>
             </div>
-            
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>البيان / المصروف</th>
-                            <th>المبلغ</th>
-                            <th>التاريخ والوقت</th>
-                            
-                        </tr>
-                    </thead>
-                    <tbody id="expenseTableBody">
-                        <!-- يتم إدراج العناصر ديناميكياً هنا -->
-                    </tbody>
-                </table>
-            </div>
-            <div id="emptyState" class="empty-state">
-                <i class="fa-solid fa-receipt"></i>
-                <p>لا توجد مصاريف مسجلة حتى الآن لهذا الشهر.</p>
+
+            <!-- Expenses Table -->
+            <div class="card table-card">
+                <div class="table-header">
+                    <h2><i class="fa-solid fa-receipt"></i> سجل المصاريف</h2>
+                    <button id="clearAll" class="btn-danger">حذف الكل</button>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>البيان</th>
+                                <th>المبلغ</th>
+                                <th>التاريخ</th>
+                                <th>إجراء</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expenseTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="emptyExpenses" class="empty-state"><p>لا توجد مصاريف مسجلة.</p></div>
             </div>
         </div>
     </div>
