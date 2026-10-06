@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مصروف شهريل</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1><i class="fa-solid fa-wallet"></i> Masroof In Month</h1>
+          
+        </header>
+
+        <!-- Main Dashboard Layout -->
+        <div class="dashboard-grid">
+            <!-- Summary Card -->
+            <div class="card total-card">
+                <div class="card-icon"><i class="fa-solid fa-coins"></i></div>
+                <div class="card-info">
+                    <h3> المصروفات الشهرية</h3>
+                    <p id="totalAmount">$0.00</p>
+                </div>
+            </div>
+
+            <!-- Add Expense Form Card -->
+            <div class="card form-card">
+                <h2><i class="fa-solid fa-circle-plus"></i> إضافة مصروف جديد</h2>
+                <form id="expenseForm">
+                    <div class="input-group">
+                        <label for="expenseTitle">اسم المصروف   </label>
+                        <input type="text" id="expenseTitle" placeholder="مثال: قهوة، تسوق، فاتورة..." required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="expenseAmount">المبلغ ($)</label>
+                        <input type="number" id="expenseAmount" step="0.01" placeholder="0.00" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="expenseDate">التاريخ</label>
+                        <input type="date" id="expenseDate" required>
+                    </div>
+
+                    <button type="submit" class="btn-submit">حفظ المصروف <i class="fa-solid fa-check"></i></button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Expense List Section -->
+        <div class="card table-card">
+            <div class="table-header">
+                <h2><i class="fa-solid fa-list-check"></i> سجل المصاريف المحفوظة</h2>
+                <button id="clearAll" class="btn-danger"><i class="fa-solid fa-trash-can"></i> حذف الكل</button>
+            </div>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>البيان / المصروف</th>
+                            <th>المبلغ</th>
+                            <th>التاريخ والوقت</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="expenseTableBody">
+                        <!-- يتم إدراج العناصر ديناميكياً هنا -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="emptyState" class="empty-state">
+                <i class="fa-solid fa-receipt"></i>
+                <p>لا توجد مصاريف مسجلة حتى الآن لهذا الشهر.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
